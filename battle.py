@@ -92,9 +92,6 @@ audio_path = "audio/Aylex - Fighter (freetouse.com).mp3"
 # Check if file exists before trying to play it
 if Path(audio_path).exists():
     audio_base64 = get_base64_audio(audio_path)
-    
-    # This hidden HTML tag attempts to force autoplay with a fallback
-    # Note: Browsers may still block this until the first click!
 
     st.components.v1.html(
         f"""
@@ -103,6 +100,8 @@ if Path(audio_path).exists():
         </audio>
         <script>
             var audio = document.getElementById("bg-audio);
+            if(!audio) audio = document.getElementById("bg-audio");
+
             audio.volume = 0.4;
 
             // Function to attempt play
@@ -114,12 +113,11 @@ if Path(audio_path).exists():
 
             // Attempt to play immediately
             window.onload = playMusic;
-            
+
             // This tries to play the audio as soon as the user interacts with anything
             
-            document.addEventListener('click', function() {{
-                var audio = document.getElementById('bg-audio');
-                audio.play();
+            window.parent.document.addEventListener('click', function() {{
+                playMusic();
             }}, {{ once: true }});
         </script>
         """,
