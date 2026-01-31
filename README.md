@@ -21,6 +21,6 @@ pip install streamlit requests
 
 ### b. Launch the Arena
 Clone this repo to your computer, open your terminal in the folder, and type:
-
 **Bash**
+
 streamlit run battle.py
