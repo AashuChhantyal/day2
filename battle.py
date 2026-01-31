@@ -1,8 +1,8 @@
 import streamlit as st
 import time
-import base64
 import requests
 from pathlib import Path
+import base64
 
 # 1. Page Configuration
 st.set_page_config(
@@ -76,13 +76,46 @@ def display_pokemon_card(data, column):
             return total
     return 0
 
+def get_base64_audio(file_path):
+    
+    """Converts audio file to base64 so it can be embedded in HTML"""
+
+    with open(file_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
 # Main App
+
+# Ensures music is always ready to play
+audio_path = "audio/Aylex - Fighter (freetouse.com).mp3"
+
+# Check if file exists before trying to play it
+if Path(audio_path).exists():
+    audio_base64 = get_base64_audio(audio_path)
+    
+    # This hidden HTML tag attempts to force autoplay with a fallback
+    # Note: Browsers may still block this until the first click!
+
+    st.components.v1.html(
+        f"""
+        <audio id="bg-audio" autoplay loop>
+            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+        </audio>
+        <script>
+            // This tries to play the audio as soon as the user interacts with anything
+            document.addEventListener('click', function() {{
+                var audio = document.getElementById('bg-audio');
+                audio.play();
+            }}, {{ once: true }});
+        </script>
+        """,
+        height=0,
+    )
+
 # Initialize session state for comparison
+
 if 'show_comparison' not in st.session_state:
     st.session_state.show_comparison = False
-
-# Ensures nusic is always ready to play
-audio_file = "audio/Aylex - Fighter (freetouse.com).mp3"
 
 # Input section - only show if not comparing
 if not st.session_state.show_comparison:
@@ -104,11 +137,8 @@ if not st.session_state.show_comparison:
             st.rerun()
         else:
             st.warning("Please enter names for both combatants!")
-    
-else:
-    # Refresh audio for the battle scene
-    st.audio(audio_file, autoplay=True)
 
+else:
     # THE BATTLE SEQUENCE BEGINS!
     p1_data = get_pokemon_data(st.session_state.p1)
     p2_data = get_pokemon_data(st.session_state.p2)
@@ -138,7 +168,7 @@ else:
         winner_container = st.container()
         with winner_container:
             if total1 > total2:
-                st.image("Images/pikachuwinner.jpg") # Or dynamic winner image!
+                st.image("Images/pikachuwinner.jpg", width=500) # Or dynamic winner image!
                 st.success(f"🏆 {st.session_state.p1.upper()} WINS!")
             elif total2 > total1:
                 st.markdown(f"<div class='winner-banner'>🏆 {st.session_state.p2.upper()} WINS! 🏆</div>", unsafe_allow_html=True)
@@ -149,7 +179,7 @@ else:
             st.session_state.show_comparison = False
             st.rerun()
     else:
-        st.error("One of your Pokemon couldn't be found! Check your spelling.")
+        st.error("Check your spelling, Trainer!")
         if st.button("Back"):
             st.session_state.show_comparison = False
             st.rerun()
