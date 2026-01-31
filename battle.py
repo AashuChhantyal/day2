@@ -102,6 +102,19 @@ if Path(audio_path).exists():
             <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
         </audio>
         <script>
+            var audio = document.getElementById("bg-audio);
+            audio.volume = 0.4;
+
+            // Function to attempt play
+            function playMusic() {{
+                audio.play().catch(function(error) {{
+                    console.log("Autoplay blocked, waiting for interaction.);
+                }});
+            }}
+
+            // Attempt to play immediately
+            window.onload = playMusic;
+            
             // This tries to play the audio as soon as the user interacts with anything
             
             document.addEventListener('click', function() {{
