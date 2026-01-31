@@ -16,11 +16,11 @@ It pulls live data from the **PokeAPI**, calculates the "Power Quotient" of two 
 
 ### a. Prerequisites
 Ensure you have Python installed on your machine. You will also need to install the project dependencies:
-**Bash**
+```Bash
 pip install streamlit requests
 
 ### b. Launch the Arena
 Clone this repo to your computer, open your terminal in the folder, and type:
-**Bash**
+```Bash
 
 streamlit run battle.py
