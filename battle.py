@@ -80,12 +80,18 @@ def display_pokemon_card(data, column):
 # Initialize session state for comparison
 if 'show_comparison' not in st.session_state:
     st.session_state.show_comparison = False
-    
+
+# Ensures nusic is always ready to play
+audio_file = "audio/Aylex - Fighter (freetouse.com).mp3"
+
 # Input section - only show if not comparing
 if not st.session_state.show_comparison:
     st.title("🎮 Poke-Battle Arena")
-    col1, col2 = st.columns(2)
 
+    # Start audio on home screen
+    st.audio(audio_file, autoplay=True)
+
+    col1, col2 = st.columns(2)
     with col1:
         p1 = st.text_input("Player 1 Pokemon:", placeholder="e.g., pikachu")
     with col2:
@@ -100,6 +106,9 @@ if not st.session_state.show_comparison:
             st.warning("Please enter names for both combatants!")
     
 else:
+    # Refresh audio for the battle scene
+    st.audio(audio_file, autoplay=True)
+
     # THE BATTLE SEQUENCE BEGINS!
     p1_data = get_pokemon_data(st.session_state.p1)
     p2_data = get_pokemon_data(st.session_state.p2)
@@ -108,10 +117,7 @@ else:
         # 1. SHOW THE "FIGHT!" BANNER
         banner_place = st.empty()
         banner_place.image("Images/pokemon.png")
-        
-        # 2. START THE MUSIC
-        st.audio("audio/Aylex - Fighter (freetouse.com).mp3", autoplay=True)
-        time.sleep(2) # Dramatic pause!
+        time.sleep(2) 
         banner_place.empty()
         
         # 3. DISPLAY FIGHTERS
@@ -127,14 +133,17 @@ else:
         total2 = display_pokemon_card(p2_data, c2)
 
         # 5. ANNOUNCE THE WINNER
-        time.sleep(1)
-        if total1 > total2:
-            st.image("Images/pikachuwinner.jpg") # Or dynamic winner image!
-            st.success(f"🏆 {st.session_state.p1.upper()} WINS!")
-        elif total2 > total1:
-            st.markdown(f"<div class='winner-banner'>🏆 {st.session_state.p2.upper()} WINS! 🏆</div>", unsafe_allow_html=True)
-        else:
-            st.info("It's a draw! Both trainers are equally matched!")
+        st.markdown("---")
+        # Use container to make sure winner info sticks to the page!
+        winner_container = st.container()
+        with winner_container:
+            if total1 > total2:
+                st.image("Images/pikachuwinner.jpg") # Or dynamic winner image!
+                st.success(f"🏆 {st.session_state.p1.upper()} WINS!")
+            elif total2 > total1:
+                st.markdown(f"<div class='winner-banner'>🏆 {st.session_state.p2.upper()} WINS! 🏆</div>", unsafe_allow_html=True)
+            else:
+                st.info("It's a draw! Both trainers are equally matched!")
     
         if st.button("↩️ New Battle"):
             st.session_state.show_comparison = False
