@@ -103,6 +103,7 @@ if Path(audio_path).exists():
         </audio>
         <script>
             // This tries to play the audio as soon as the user interacts with anything
+            
             document.addEventListener('click', function() {{
                 var audio = document.getElementById('bg-audio');
                 audio.play();
@@ -122,7 +123,7 @@ if not st.session_state.show_comparison:
     st.title("🎮 Poke-Battle Arena")
 
     # Start audio on home screen
-    st.audio(audio_file, autoplay=True)
+    st.audio(audio_path, autoplay = True)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -139,6 +140,9 @@ if not st.session_state.show_comparison:
             st.warning("Please enter names for both combatants!")
 
 else:
+
+    st.audio(audio_path, autoplay = True)
+
     # THE BATTLE SEQUENCE BEGINS!
     p1_data = get_pokemon_data(st.session_state.p1)
     p2_data = get_pokemon_data(st.session_state.p2)
